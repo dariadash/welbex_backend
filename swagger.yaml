@@ -1,0 +1,250 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: WelbeX test task Express API with Swagger
+  description: CRUD API application made with Express and documented with Swagger
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: http://localhost:3000/api/v1
+tags:
+  - name: "Todos"
+  - name: "Users"
+paths:
+  /todos:
+    get:
+      tags:
+        - "Todos"
+      summary: Get all todos
+      description: Returns a list of all todos.
+      parameters:
+        - in: query
+          name: page
+          description: The page number to retrieve.
+          schema:
+            type: integer
+            default: 1
+      responses:
+        200:
+          description: List of todos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  todos:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Todo"
+                  totalCount:
+                    type: integer
+                  page:
+                    type: integer
+    post:
+      tags:
+        - "Todos"
+      summary: Create a new todo
+      description: Creates a new todo.
+      requestBody:
+        description: Todo object that needs to be added to the list.
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                media:
+                  type: string
+                  format: binary
+      responses:
+        200:
+          description: Todo created successfully
+  /todos/{id}:
+    put:
+      tags:
+        - "Todos"
+      summary: Update an existing todo
+      description: Updates an existing todo.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the todo to update.
+          schema:
+            type: integer
+      requestBody:
+        description: Todo object that needs to be updated.
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                media:
+                  type: string
+                  format: binary
+      responses:
+        200:
+          description: Todo updated successfully
+    delete:
+      tags:
+        - "Todos"
+      summary: Delete an existing todo
+      description: Deletes an existing todo.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the todo to delete.
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Todo deleted successfully
+  /users:
+    get:
+      tags:
+        - Users
+      summary: Get all users
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/User"
+  /users/register:
+    post:
+      tags:
+        - Users
+      summary: Register a new user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: user
+          in: body
+          description: User object to be created
+          required: true
+          schema:
+            $ref: "#/components/schemas/User"
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+  /users/login:
+    post:
+      tags:
+        - Users
+      summary: Log in as a user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: user
+          in: body
+          description: User credentials to be authenticated
+          required: true
+          schema:
+            type: object
+            required:
+              - email
+              - password
+            properties:
+              email:
+                type: string
+              password:
+                type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/components/schemas/TokenResponse"
+        "400":
+          description: Bad Request
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+  /users/{id}:
+    delete:
+      tags:
+        - Users
+      summary: Delete a user by ID
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: ID of the user to be deleted
+          required: true
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: User deleted
+components:
+  schemas:
+    Todo:
+      type: object
+      properties:
+        id:
+          type: integer
+        text:
+          type: string
+        mediaContent:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        user:
+          $ref: "#/components/schemas/User"
+    User:
+      type: object
+      required:
+        - username
+        - email
+        - password
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+    TokenResponse:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
