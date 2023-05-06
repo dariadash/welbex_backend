@@ -10,7 +10,7 @@
     "typeorm": "typeorm-ts-node-commonjs",
     "migration:up": "tsc && typeorm migration:run -d dist/utils/dataSource.js",
     "migration:down": "tsc && typeorm migration:revert -d dist/utils/dataSource.js",
-    "db:seed": "tsc && ts-node ./node_modules/typeorm-seeding/dist/cli.js seed"
+    "db:seed": "tsc && typeorm-seeding seed -r ./dist -c seeding-source.js"
   },
   "author": "",
   "license": "ISC",
@@ -29,11 +29,11 @@
     "swagger-ui-express": "^4.6.3",
     "tsc-watch": "^6.0.4",
     "typeorm": "^0.3.15",
-    "typeorm-seeding": "^1.6.1",
     "typescript": "^5.0.4",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
+    "@concepta/typeorm-seeding": "^4.0.0-beta.1",
     "@faker-js/faker": "^7.6.0",
     "@types/bcrypt": "^5.0.0",
     "@types/express": "^4.17.17",

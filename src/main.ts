@@ -6,7 +6,8 @@ import YAML from 'yamljs';
 
 import { JWT_SECRET_KEY, passport } from './passport';
 import { AppDataSource } from './utils/dataSource';
-import { todoRouter, userRouter } from 'controllers';
+import { todoRouter, userRouter } from './controllers';
+import seedingSource from './seeding-source'
 
 require('dotenv').config();
 const swaggerDocument = YAML.load('swagger.yaml');
@@ -36,3 +37,5 @@ AppDataSource.initialize()
         app.listen(process.env.PORT, () => console.log(`сервер запущен на ${process.env.PORT} порту`));
     })
     .catch((error) => console.log(error));
+
+seedingSource.dataSource = AppDataSource
